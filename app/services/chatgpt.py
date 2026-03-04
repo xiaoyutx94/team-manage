@@ -363,14 +363,17 @@ class ChatGPTService:
             }
         return result
 
-    async def clear_session(self, identifier: str):
-        """清理指定身份的会话"""
-        if identifier in self._sessions:
-            try:
-                await self._sessions[identifier].close()
-            except:
-                pass
-            del self._sessions[identifier]
+    async def clear_session(self, identifier: Optional[str] = None):
+        """清理指定身份的会话，若不提供则清理所有"""
+        if identifier:
+            if identifier in self._sessions:
+                try:
+                    await self._sessions[identifier].close()
+                except:
+                    pass
+                del self._sessions[identifier]
+        else:
+            await self.close()
 
     async def close(self):
         """关闭所有会话"""
